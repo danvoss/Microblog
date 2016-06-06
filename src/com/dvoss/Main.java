@@ -24,10 +24,9 @@ public class Main {
                         return new ModelAndView(m, "index.html");
                     }
                     else {
+                        // how to check if password matches?
                         m.put("name", user.name);
-                        m.put("password", user.password);
                         m.put("messages", messageArrayList);
-                        m.put("message", message);
                     }
                     return new ModelAndView(m, "messages.html");
                 },
