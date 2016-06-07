@@ -4,14 +4,9 @@ package com.dvoss;
  * Created by Dan on 6/6/16.
  */
 public class Message {
-    String message;
+    String messageText;
 
     public Message(String message) {
-        this.message = message;
+        this.messageText = message;
     }
-
-//    @Override
-//    public String toString() {
-//        return message;
-//    }
 }

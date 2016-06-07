@@ -1,34 +1,33 @@
 package com.dvoss;
 
 import spark.ModelAndView;
+import spark.Session;
 import spark.Spark;
 import spark.template.mustache.MustacheTemplateEngine;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Main {
 
-    static User user;
-    static Message message;
-    //static ArrayList<User> userList = new ArrayList<>();
-    static ArrayList<Message> messageArrayList = new ArrayList<>();
-    static HashMap<String, User> pwMap = new HashMap<>();
+    //static User user;
+    //static Message msg;
+    static HashMap<String, User> users = new HashMap<>();
 
     public static void main(String[] args) {
         Spark.init();
         Spark.get(
                 "/",
                 (request, response) -> {
+                    Session session = request.session();
+                    String username = session.attribute("username");
                     HashMap m = new HashMap();
-                    if (user == null) {
+                    if (username == null) {
                         return new ModelAndView(m, "index.html");
                     }
                     else {
+                        User user = users.get(username);
                         m.put("name", user.name);
-                        m.put("messages", messageArrayList);
-                        //m.put("password", user.password);
-                        //m.put("message", message);
+                        m.put("messages", user.messages);
                     }
                     return new ModelAndView(m, "messages.html");
                 },
@@ -39,31 +38,47 @@ public class Main {
                 (request, response) -> {
                     String username = request.queryParams("username");
                     String password = request.queryParams("password");
-                    if (!pwMap.containsKey(username)) {
+                    if (username == null || password == null) {
+                        throw new Exception("Name or password not sent.");
+                        //Spark.halt("Name or password not sent");
+                    }
+                    User user = users.get(username);
+                    if (user == null) {
                         user = new User(username, password);
-                        //userList.add(user);
-                        pwMap.put("username", user);
-                        response.redirect("/");
-                        return "";
+                        users.put(username, user);
                     }
-                    else {
-                        if (pwMap.get(username).getPassword().equals(password)) {
-                            response.redirect("messages.html");
-                            return "";
-                        }
-                        else {
-                            Spark.halt("Incorrect password.");
-                        }
+                    else if (!password.equals(user.password)) {
+                        throw new Exception("Wrong password");
+                        //Spark.halt("Wrong password");
                     }
+                    Session session = request.session();
+                    session.attribute("username", username);
+
+                    response.redirect("/");
                     return "";
-                }
+                    }
         );
         Spark.post(
                 "/create-message",
                 (request, response) -> {
+                    Session session = request.session();
+                    String username = session.attribute("username");
+                    if (username == null) {
+                        throw new Exception("Not logged in");
+                        //Spark.halt("Not logged in");
+                    }
                     String newMessage = request.queryParams("message");
-                    Message message = new Message(newMessage);
-                    messageArrayList.add(message);
+                    if (newMessage == null) {
+                        throw new Exception("Invalid form field");
+                        //Spark.halt("Invalid form field");
+                    }
+                    User user = users.get(username);
+                    if (user == null) {
+                        throw new Exception("User does not exist");
+                        //Spark.halt("User does not exist");
+                    }
+                    Message msg = new Message(newMessage);
+                    user.messages.add(msg);
                     response.redirect("/");
                     return "";
                 }
@@ -71,7 +86,8 @@ public class Main {
         Spark.post(
                 "/logout",
                 (request, response) -> {
-                    user = null;
+                    Session session = request.session();
+                    session.invalidate();
                     response.redirect("/");
                     return "";
                 }
