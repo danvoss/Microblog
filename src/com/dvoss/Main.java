@@ -72,6 +72,7 @@ public class Main {
                     }
                     Message msg = new Message(newMessage);
                     user.messages.add(msg);
+
                     response.redirect("/");
                     return "";
                 }
@@ -96,6 +97,7 @@ public class Main {
                     int numberDelete = Integer.valueOf(request.queryParams("msg-delete"));
                     User user = users.get(username);
                     user.messages.remove(numberDelete - 1);
+
                     response.redirect("/");
                     return "";
                 }
@@ -113,6 +115,7 @@ public class Main {
                     String msgEdited = request.queryParams("msg-edit");
                     Message msg = new Message(msgEdited);
                     user.messages.set(numberEdit - 1, msg);
+
                     response.redirect("/");
                     return "";
                 }
