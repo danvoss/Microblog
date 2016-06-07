@@ -37,7 +37,6 @@ public class Main {
                     String username = request.queryParams("username");
                     String password = request.queryParams("password");
                     if (username == null || password == null) {
-                        //throw new Exception("Name or password not sent.");
                         Spark.halt("Name or password not sent");
                     }
                     User user = users.get(username);
@@ -46,7 +45,6 @@ public class Main {
                         users.put(username, user);
                     }
                     else if (!password.equals(user.password)) {
-                        //throw new Exception("Wrong password");
                         Spark.halt("Wrong password");
                     }
                     Session session = request.session();
@@ -63,17 +61,14 @@ public class Main {
                     String username = session.attribute("username");
                     if (username == null) {
                         throw new Exception("Not logged in");
-//                        Spark.halt("Not logged in");
                     }
                     String newMessage = request.queryParams("message");
                     if (newMessage == null) {
                         throw new Exception("Invalid form field");
-//                        Spark.halt("Invalid form field");
                     }
                     User user = users.get(username);
                     if (user == null) {
                         throw new Exception("User does not exist");
-//                        Spark.halt("User does not exist");
                     }
                     Message msg = new Message(newMessage);
                     user.messages.add(msg);
@@ -115,11 +110,10 @@ public class Main {
                     }
                     int numberEdit = Integer.valueOf(request.queryParams("msg-edit-number"));
                     User user = users.get(username);
-
-                    // how to change existing message to new (request.queryParams("msg-edit")) ??
-
-
-                    response.redirect("messags.html");
+                    String msgEdited = request.queryParams("msg-edit");
+                    Message msg = new Message(msgEdited);
+                    user.messages.set(numberEdit - 1, msg);
+                    response.redirect("/");
                     return "";
                 }
         );
