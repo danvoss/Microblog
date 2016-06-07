@@ -9,8 +9,6 @@ import java.util.HashMap;
 
 public class Main {
 
-    //static User user;
-    //static Message msg;
     static HashMap<String, User> users = new HashMap<>();
 
     public static void main(String[] args) {
@@ -39,8 +37,8 @@ public class Main {
                     String username = request.queryParams("username");
                     String password = request.queryParams("password");
                     if (username == null || password == null) {
-                        throw new Exception("Name or password not sent.");
-                        //Spark.halt("Name or password not sent");
+                        //throw new Exception("Name or password not sent.");
+                        Spark.halt("Name or password not sent");
                     }
                     User user = users.get(username);
                     if (user == null) {
@@ -48,8 +46,8 @@ public class Main {
                         users.put(username, user);
                     }
                     else if (!password.equals(user.password)) {
-                        throw new Exception("Wrong password");
-                        //Spark.halt("Wrong password");
+                        //throw new Exception("Wrong password");
+                        Spark.halt("Wrong password");
                     }
                     Session session = request.session();
                     session.attribute("username", username);
@@ -65,17 +63,17 @@ public class Main {
                     String username = session.attribute("username");
                     if (username == null) {
                         throw new Exception("Not logged in");
-                        //Spark.halt("Not logged in");
+//                        Spark.halt("Not logged in");
                     }
                     String newMessage = request.queryParams("message");
                     if (newMessage == null) {
                         throw new Exception("Invalid form field");
-                        //Spark.halt("Invalid form field");
+//                        Spark.halt("Invalid form field");
                     }
                     User user = users.get(username);
                     if (user == null) {
                         throw new Exception("User does not exist");
-                        //Spark.halt("User does not exist");
+//                        Spark.halt("User does not exist");
                     }
                     Message msg = new Message(newMessage);
                     user.messages.add(msg);
@@ -89,6 +87,39 @@ public class Main {
                     Session session = request.session();
                     session.invalidate();
                     response.redirect("/");
+                    return "";
+                }
+        );
+        Spark.post(
+                "/delete-message",
+                (request, response) -> {
+                    Session session = request.session();
+                    String username = session.attribute("username");
+                    if (username == null) {
+                        throw new Exception("Not logged in");
+                    }
+                    int numberDelete = Integer.valueOf(request.queryParams("msg-delete"));
+                    User user = users.get(username);
+                    user.messages.remove(numberDelete - 1);
+                    response.redirect("/");
+                    return "";
+                }
+        );
+        Spark.post(
+                "/edit-message",
+                (request, response) -> {
+                    Session session = request.session();
+                    String username = session.attribute("username");
+                    if (username == null) {
+                        throw new Exception("Not logged in");
+                    }
+                    int numberEdit = Integer.valueOf(request.queryParams("msg-edit-number"));
+                    User user = users.get(username);
+
+                    // how to change existing message to new (request.queryParams("msg-edit")) ??
+
+
+                    response.redirect("messags.html");
                     return "";
                 }
         );

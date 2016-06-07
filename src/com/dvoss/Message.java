@@ -4,9 +4,9 @@ package com.dvoss;
  * Created by Dan on 6/6/16.
  */
 public class Message {
-    String messageText;
+    String message;
 
     public Message(String message) {
-        this.messageText = message;
+        this.message = message;
     }
 }

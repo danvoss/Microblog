@@ -12,9 +12,20 @@
 </style>
 </head>
 <body>
-<form action="/create-message" method="post">
-    <input type="text" name="message" placeholder="Write a message">
+<form action="/create-message" method="post"/>
+    <input type="text" name="message" placeholder="Write a message"/>
     <button type="submit">Submit</button>
+</form>
+<br>
+<form action="/delete-message" method="post"/>
+    <input type="number" name="msg-delete" placeholder="Message #"/>
+    <button type="submit">Delete</button>
+</form>
+<br>
+<form action="/edit-message" method="post"/>
+    <input type="number" name="msg-edit-number" placeholder="Message #"/>
+    <input type="text" name="msg-edit" placeholder="Edit message"/>
+    <button type="submit">Edit</button>
 </form>
 <br>
 <br>
@@ -28,5 +39,6 @@ Messages by {{name}}:
 </ol>
 <form action="/logout" method="post">
     <button type="submit">Logout</button>
+</form>
 </body>
 </html>
