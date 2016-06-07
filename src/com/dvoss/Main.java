@@ -11,8 +11,9 @@ public class Main {
 
     static User user;
     static Message message;
-    static ArrayList<User> userList = new ArrayList<>();
+    //static ArrayList<User> userList = new ArrayList<>();
     static ArrayList<Message> messageArrayList = new ArrayList<>();
+    static HashMap<String, User> pwMap = new HashMap<>();
 
     public static void main(String[] args) {
         Spark.init();
@@ -24,11 +25,10 @@ public class Main {
                         return new ModelAndView(m, "index.html");
                     }
                     else {
-                        // how to check if password matches?
                         m.put("name", user.name);
                         m.put("messages", messageArrayList);
-                        m.put("password", user.password);
-                        m.put("message", message);
+                        //m.put("password", user.password);
+                        //m.put("message", message);
                     }
                     return new ModelAndView(m, "messages.html");
                 },
@@ -39,9 +39,22 @@ public class Main {
                 (request, response) -> {
                     String username = request.queryParams("username");
                     String password = request.queryParams("password");
-                    user = new User(username, password);
-                    userList.add(user);
-                    response.redirect("/");
+                    if (!pwMap.containsKey(username)) {
+                        user = new User(username, password);
+                        //userList.add(user);
+                        pwMap.put("username", user);
+                        response.redirect("/");
+                        return "";
+                    }
+                    else {
+                        if (pwMap.get(username).getPassword().equals(password)) {
+                            response.redirect("messages.html");
+                            return "";
+                        }
+                        else {
+                            Spark.halt("Incorrect password.");
+                        }
+                    }
                     return "";
                 }
         );
@@ -49,7 +62,7 @@ public class Main {
                 "/create-message",
                 (request, response) -> {
                     String newMessage = request.queryParams("message");
-                    message = new Message(newMessage);
+                    Message message = new Message(newMessage);
                     messageArrayList.add(message);
                     response.redirect("/");
                     return "";
