@@ -27,6 +27,8 @@ public class Main {
                         // how to check if password matches?
                         m.put("name", user.name);
                         m.put("messages", messageArrayList);
+                        m.put("password", user.password);
+                        m.put("message", message);
                     }
                     return new ModelAndView(m, "messages.html");
                 },
