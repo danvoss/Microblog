@@ -17,15 +17,12 @@
     <button type="submit">Submit</button>
 </form>
 <br>
-<form action="/delete-message" method="post"/>
-    <input type="number" name="msg-delete" placeholder="Message #"/>
-    <button type="submit">Delete</button>
-</form>
+
 <br>
 <form action="/edit-message" method="post"/>
-    <input type="number" name="msg-edit-number" placeholder="Message #"/>
-    <input type="text" name="msg-edit" placeholder="Edit message"/>
-    <button type="submit">Edit</button>
+<input type="number" name="msg-edit-number" placeholder="Message #"/>
+<input type="text" name="msg-edit" placeholder="Edit message"/>
+<button type="submit">Edit</button>
 </form>
 <br>
 <br>
@@ -34,6 +31,10 @@ Messages by {{name}}:
     {{#messages}}
     <li>
         {{message}}
+        <form action="/delete-message" method="post" style="display: inline-block;"/>
+        <input type="hidden" name="msgDelete" value="{{msgDelete}}"/>
+        <button type="submit">Delete</button>
+        </form>
     </li>
     {{/messages}}
 </ol>
